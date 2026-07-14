@@ -1,0 +1,11 @@
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/Main.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/render/Renderer.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/GameState.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/PieceFactory.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/Board.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/config/Config.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/Piece.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/input/InputHandler.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/Score.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/Game.java
+/home/anaflavia/tetris_em_java/tetris/src/main/java/com/anaflavia/tetris/game/Tetromino.java

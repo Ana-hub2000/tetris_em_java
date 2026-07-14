@@ -1,0 +1,12 @@
+com/anaflavia/tetris/game/Game.class
+com/anaflavia/tetris/game/GameState.class
+com/anaflavia/tetris/game/Board.class
+com/anaflavia/tetris/game/Score.class
+com/anaflavia/tetris/render/Renderer.class
+com/anaflavia/tetris/input/InputHandler.class
+com/anaflavia/tetris/config/Config.class
+com/anaflavia/tetris/game/Tetromino.class
+com/anaflavia/tetris/Main.class
+com/anaflavia/tetris/game/Piece.class
+com/anaflavia/tetris/game/PieceFactory.class
+com/anaflavia/tetris/game/Game$1.class
