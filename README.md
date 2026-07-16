@@ -7,16 +7,7 @@ O objetivo deste projeto foi praticar conceitos de Programação Orientada a Obj
 ---
 
 ## 📷 Demonstração
-
-> Adicione aqui um GIF ou algumas imagens do jogo funcionando.
-
-Exemplo:
-
-```
-assets/demo.gif
-```
-
----
+https://www.instagram.com/reel/Da0o3KhR1Wd/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ==
 
 ## ✨ Funcionalidades
 
@@ -66,7 +57,7 @@ src
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/SEU_USUARIO/tetris.git
+git clone https://github.com/Ana-hub2000/tetris_em_java.git
 ```
 
 Entre na pasta:
