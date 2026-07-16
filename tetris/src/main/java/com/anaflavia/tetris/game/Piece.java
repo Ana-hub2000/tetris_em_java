@@ -1,6 +1,7 @@
 package com.anaflavia.tetris.game;
 
 import com.anaflavia.tetris.config.Config;
+import com.googlecode.lanterna.TextColor;
 
 public class Piece {
 
@@ -18,6 +19,20 @@ public class Piece {
         this.rotation = 0;
 
     }
+    public void setRow(int row) {
+    this.row = row;
+}
+
+public void setColumn(int column) {
+    this.column = column;
+}
+    
+    public int getId() {
+    return tetromino.ordinal() + 1;
+}
+    public TextColor getColor() {
+    return tetromino.getColor();
+}
     public void rotate() {
     rotation = (rotation + 1) % 4;
 }

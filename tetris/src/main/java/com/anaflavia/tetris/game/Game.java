@@ -10,6 +10,7 @@ import java.util.Random;
 
 
 public class Game {
+    private Piece nextPiece;
     private long lastFallTime;
     private final Board board;
     private final Renderer renderer;
@@ -71,11 +72,21 @@ public Game() throws Exception {
     board = new Board();
     renderer = new Renderer();
     random = new Random();
-    currentPiece = new Piece(Tetromino.T, 0, 4);
+    currentPiece = createRandomPiece();
+nextPiece = createRandomPiece();
     score = 0;
     running = true;
     lastFallTime = System.currentTimeMillis();
     
+}
+private Piece createRandomPiece() {
+
+    Tetromino[] tetrominoes = Tetromino.values();
+
+    Tetromino randomTetromino =
+            tetrominoes[random.nextInt(tetrominoes.length)];
+
+    return new Piece(randomTetromino, 0, 4);
 }
 private boolean canMoveDown() {
 
@@ -158,7 +169,7 @@ private void updateGame() throws Exception {
         lastFallTime = currentTime;
     }
 
-    renderer.draw(board, currentPiece, score);
+   renderer.draw(board, currentPiece, nextPiece, score);
 }
 private boolean canMoveLeft() {
 
@@ -202,24 +213,22 @@ private void lockPiece() {
                 int boardRow = currentPiece.getRow() + row;
                 int boardColumn = currentPiece.getColumn() + column;
 
-                board.setCell(boardRow, boardColumn, 1);
+                board.setCell(boardRow, boardColumn, currentPiece.getId());
             }
         }
     }
 }
+
+
 private void spawnPiece() {
 
-    Tetromino[] tetrominoes = Tetromino.values();
+    currentPiece = new Piece(nextPiece.getTetromino(), 0, 4);
 
-    Tetromino randomTetromino =
-            tetrominoes[random.nextInt(tetrominoes.length)];
+    nextPiece = createRandomPiece();
 
-    currentPiece = new Piece(randomTetromino, 0, 4);
-if (isGameOver()) {
-
-    state = GameState.GAME_OVER;
-
-}
+    if (isGameOver()) {
+        state = GameState.GAME_OVER;
+    }
 }
 
 

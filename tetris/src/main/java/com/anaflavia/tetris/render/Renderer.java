@@ -6,10 +6,15 @@ import com.anaflavia.tetris.game.Piece;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.anaflavia.tetris.game.Piece;
+import com.googlecode.lanterna.TextColor;
+import com.anaflavia.tetris.game.Tetromino;
+
 
 public class Renderer {
+    private final Screen screen;
 
+    private boolean blink = true;
+    private long lastBlink = System.currentTimeMillis();
     private static final TextCharacter HORIZONTAL = TextCharacter.fromCharacter('─')[0];
     private static final TextCharacter VERTICAL = TextCharacter.fromCharacter('│')[0];
     private static final TextCharacter TOP_LEFT = TextCharacter.fromCharacter('┌')[0];
@@ -18,18 +23,29 @@ public class Renderer {
     private static final TextCharacter BOTTOM_RIGHT = TextCharacter.fromCharacter('┘')[0];
     private static final TextCharacter BLOCK = TextCharacter.fromCharacter('█')[0];
     private static final TextCharacter EMPTY = TextCharacter.fromCharacter(' ')[0];
-
-    private final Screen screen;
-
+   
     public Renderer() throws Exception {
         screen = new DefaultTerminalFactory().createScreen();
         screen.startScreen();
     }
+   private void updateBlink() {
+
+    if (System.currentTimeMillis() - lastBlink >= 350) {
+
+        blink = !blink;
+        lastBlink = System.currentTimeMillis();
+
+    }
+}
     public void drawMenu() throws Exception {
+        screen.clear();
+        updateBlink();
 
-    screen.clear();
+        var graphics = screen.newTextGraphics();
+       graphics.setForegroundColor(
+        blink ? TextColor.ANSI.CYAN : TextColor.ANSI.YELLOW
+);
 
-    var graphics = screen.newTextGraphics();
 
     graphics.putString(18, 3, "████████╗███████╗████████╗██████╗ ██╗███████╗");
     graphics.putString(18, 4, "╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝");
@@ -37,16 +53,24 @@ public class Renderer {
     graphics.putString(18, 6, "   ██║   ██╔══╝     ██║   ██╔══██╗██║╚════██║");
     graphics.putString(18, 7, "   ██║   ███████╗   ██║   ██║  ██║██║███████║");
     graphics.putString(18, 8, "   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝");
+    graphics.setForegroundColor(
+        blink ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE
+);
+    graphics.putString(28,12,"ENTER - Jogar");
+    graphics.setForegroundColor(TextColor.ANSI.RED);
 
-    graphics.putString(28, 12, "ENTER - Jogar");
-    graphics.putString(28, 14, "ESC - Sair");
+graphics.putString(28,14,"ESC - Sair");
 
-    graphics.putString(22, 18, "Projeto de Tetris - Java + Lanterna");
+   graphics.setForegroundColor(TextColor.ANSI.BLUE);
+
+graphics.putString(18,18,"Projeto de Tetris");
+graphics.putString(24,19,"Java + Lanterna");
+graphics.putString(26,20,"Ana Flávia");
 
     screen.refresh();
 }
 public void drawGameOver(int score) throws Exception {
-
+    updateBlink();
     screen.clear();
 
     var graphics = screen.newTextGraphics();
@@ -61,26 +85,99 @@ public void drawGameOver(int score) throws Exception {
 
     screen.refresh();
 }
-
- public void draw(Board board, Piece piece, int score) throws Exception {
+public void draw(Board board,
+                 Piece currentPiece,
+                 Piece nextPiece,
+                 int score) throws Exception {
 
     screen.clear();
 
+    var graphics = screen.newTextGraphics();
+
     drawBorder();
     drawCells(board);
-    drawPiece(piece);
-    screen.newTextGraphics().putString(
-    Config.BOARD_WIDTH * Config.CELL_SIZE + 5,
-    2,
-    "Score: " + score
-);
-screen.newTextGraphics().putString(
-    Config.BOARD_WIDTH * Config.CELL_SIZE + 5,
-    4,
-    "Linhas: " + (score / 100)
-);
+    drawPiece(currentPiece);
+
+    graphics.putString(
+        Config.BOARD_WIDTH * Config.CELL_SIZE + 5,
+        2,
+        "Score: " + score
+    );
+
+    graphics.putString(
+        Config.BOARD_WIDTH * Config.CELL_SIZE + 5,
+        4,
+        "Linhas: " + (score / 100)
+    );
+
+    graphics.setForegroundColor(TextColor.ANSI.WHITE);
+
+    graphics.putString(
+        Config.BOARD_WIDTH * Config.CELL_SIZE + 5,
+        7,
+        "Próxima:"
+    );
+
+    drawNextPieceBox();
+    drawNextPiece(nextPiece);
 
     screen.refresh();
+}
+private void drawNextPiece(Piece piece) {
+
+    int[][] shape = piece.getShape();
+    
+int boxX = Config.BOARD_WIDTH * Config.CELL_SIZE + 5;
+int boxY = 8;
+
+int boxWidth = 8;   // largura interna da caixa
+int boxHeight = 4;  // altura interna da caixa
+
+int pieceWidth = shape[0].length * 2;
+int pieceHeight = shape.length;
+
+int startX = boxX + 1 + (boxWidth - pieceWidth) / 2;
+int startY = boxY + 1 + (boxHeight - pieceHeight) / 2;
+
+    TextCharacter block = new TextCharacter(
+            '█',
+            piece.getColor(),
+            TextColor.ANSI.DEFAULT
+    );
+
+    for (int row = 0; row < shape.length; row++) {
+
+        for (int column = 0; column < shape[row].length; column++) {
+
+            if (shape[row][column] == 1) {
+
+                int x = startX + column * 2;
+                int y = startY + row;
+
+                screen.setCharacter(x, y, block);
+                screen.setCharacter(x + 1, y, block);
+
+            }
+
+        }
+
+    }
+}
+private void drawNextPieceBox() {
+
+    var graphics = screen.newTextGraphics();
+
+    graphics.setForegroundColor(TextColor.ANSI.BLUE_BRIGHT);
+
+    int x = Config.BOARD_WIDTH * Config.CELL_SIZE + 5;
+    int y = 8;
+
+    graphics.putString(x, y,     "╔════════╗");
+    graphics.putString(x, y + 1, "║        ║");
+    graphics.putString(x, y + 2, "║        ║");
+    graphics.putString(x, y + 3, "║        ║");
+    graphics.putString(x, y + 4, "║        ║");
+    graphics.putString(x, y + 5, "╚════════╝");
 }
 private void drawPiece(Piece piece) {
 
@@ -95,8 +192,14 @@ private void drawPiece(Piece piece) {
                 int x = (piece.getColumn() + column) * Config.CELL_SIZE + 1;
                 int y = piece.getRow() + row + 1;
 
-                screen.setCharacter(x, y, BLOCK);
-                screen.setCharacter(x + 1, y, BLOCK);
+                TextCharacter block = new TextCharacter(
+                    '█',
+                    piece.getColor(),
+                    TextColor.ANSI.DEFAULT
+                );
+
+                screen.setCharacter(x, y, block);
+                screen.setCharacter(x + 1, y, block);
 
             }
 
@@ -104,6 +207,35 @@ private void drawPiece(Piece piece) {
 
     }
 
+}
+private TextColor getColor(int id) {
+
+    switch (id) {
+
+        case 1:
+            return TextColor.ANSI.CYAN;
+
+        case 2:
+            return TextColor.ANSI.YELLOW;
+
+        case 3:
+            return TextColor.ANSI.MAGENTA;
+
+        case 4:
+            return TextColor.ANSI.GREEN;
+
+        case 5:
+            return TextColor.ANSI.RED;
+
+        case 6:
+            return TextColor.ANSI.BLUE;
+
+        case 7:
+            return TextColor.ANSI.WHITE;
+
+        default:
+            return TextColor.ANSI.DEFAULT;
+    }
 }
 
     private void drawBorder() {
@@ -128,23 +260,35 @@ private void drawPiece(Piece piece) {
         screen.setCharacter(0, Config.BOARD_HEIGHT + 1, BOTTOM_LEFT);
         screen.setCharacter(boardWidth + 1, Config.BOARD_HEIGHT + 1, BOTTOM_RIGHT);
     }
+private void drawCells(Board board) {
 
-    private void drawCells(Board board) {
+    for (int row = 0; row < Config.BOARD_HEIGHT; row++) {
 
-        for (int row = 0; row < Config.BOARD_HEIGHT; row++) {
+        for (int column = 0; column < Config.BOARD_WIDTH; column++) {
 
-            for (int column = 0; column < Config.BOARD_WIDTH; column++) {
+            int value = board.getCell(row, column);
 
-                TextCharacter character = board.getCell(row, column) == 0 ? EMPTY : BLOCK;
+            TextCharacter character = getBlock(value);
 
-                screen.setCharacter(column * Config.CELL_SIZE + 1, row + 1, character);
-                screen.setCharacter(column * Config.CELL_SIZE + 2, row + 1, character);
-
-            }
+            screen.setCharacter(column * Config.CELL_SIZE + 1, row + 1, character);
+            screen.setCharacter(column * Config.CELL_SIZE + 2, row + 1, character);
 
         }
 
     }
+}
+    private TextCharacter getBlock(int id) {
+
+    if (id == 0) {
+        return EMPTY;
+    }
+
+    return new TextCharacter(
+        '█',
+        Tetromino.values()[id - 1].getColor(),
+        TextColor.ANSI.DEFAULT
+    );
+}
 
     public Screen getScreen() {
         return screen;
