@@ -7,3 +7,4 @@ public enum GameState {
     GAME_OVER
 
 }
+//acabei não usando o enum, mas deixei ele aqui caso eu queira usar no futuro
